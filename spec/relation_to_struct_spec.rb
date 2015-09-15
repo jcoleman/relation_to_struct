@@ -62,12 +62,14 @@ describe RelationToStruct do
   end
 
   describe 'non-model specific querying' do
-    it 'should allow querying from ActiveRecord' do
-      pending 'next version'
+    it 'ActiveRecord::Base should respond to :structs_from_sql' do
+      expect(ActiveRecord::Base.respond_to?(:structs_from_sql)).to eq(true)
     end
 
-    it 'should allow using find_by_sql directly' do
-      pending 'next version'
+    it 'should allow querying with SQL directly' do
+      test_struct = Struct.new(:number)
+      sql = "SELECT 1 * 23"
+      expect(ActiveRecord::Base.structs_from_sql(test_struct, sql)).to eq([test_struct.new(23)])
     end
   end
 end
