@@ -8,6 +8,11 @@ module RelationToStruct::ActiveRecordBaseExtension
         struct_class.new(*tuple)
       end
     end
+
+    def pluck_from_sql(sql, binds=[])
+      result = connection.select_all(sanitize_sql(sql, nil), "Structs SQL Load", binds)
+      result.cast_values()
+    end
   end
 end
 

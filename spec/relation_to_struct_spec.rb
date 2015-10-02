@@ -71,5 +71,15 @@ describe RelationToStruct do
       sql = "SELECT 1 * 23"
       expect(ActiveRecord::Base.structs_from_sql(test_struct, sql)).to eq([test_struct.new(23)])
     end
+
+    it 'should allow plucking with SQL directly' do
+      sql = "SELECT 1 * 23"
+      expect(ActiveRecord::Base.pluck_from_sql(sql)).to eq([23])
+    end
+
+    it 'should allow plucking multiple columns with SQL directly' do
+      sql = "SELECT 1 * 23, 25"
+      expect(ActiveRecord::Base.pluck_from_sql(sql)).to eq([[23, 25]])
+    end
   end
 end
