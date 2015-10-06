@@ -21,7 +21,7 @@ module RelationToStruct::ActiveRecordBaseExtension
     end
 
     def pluck_from_sql(sql, binds=[])
-      result = connection.select_all(sanitize_sql(sql, nil), "Structs SQL Load", binds)
+      result = connection.select_all(sanitize_sql(sql, nil), "Pluck SQL Load", binds)
       result.cast_values()
     end
   end
