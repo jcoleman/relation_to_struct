@@ -9,6 +9,10 @@ module RelationToStruct::ActiveRecordBaseExtension
         raise ArgumentError, 'Expected struct fields and columns lengths to be equal'
       end
 
+      if result.columns.size != result.column_types.size
+        raise ArgumentError, 'Expected unique column names count and column count to be equal'
+      end
+
       if result.columns.size == 1
         result.cast_values().map do |tuple|
           struct_class.new(tuple)
