@@ -20,9 +20,32 @@ Or install it yourself as:
 
     $ gem install relation_to_struct
 
-## Usage
+## Examples
 
-TODO: Write usage instructions here
+You can query either via direct SQL or from an ActiveRecord relation.
+
+### From an existing relation
+
+```
+UserPostsSummary = Struct.new(:user_name, :post_count)
+relation = User.joins(:blog_posts).where(name: 'Hayek').group('users.id').select('users.name, COUNT(blog_posts.id)')
+relation.to_structs(UserPostsSummary) # => array of structs
+```
+
+### From raw SQL
+
+```
+UserPostsSummary = Struct.new(:user_name, :post_count)
+sql = <<-eos
+  SELECT users.name, COUNT(blog_posts.id)
+  FROM users
+  LEFT OUTER JOIN blog_posts ON blog_posts.user_id = users.id
+  GROUP BY users.id
+eos
+
+ActiveRecord::Base.structs_from_sql(UserPostsSummary, sql) # => array of structs
+ActiveRecord::Base.pluck_from_sql(sql) # => array of tuples
+```
 
 ## Contributing
 
