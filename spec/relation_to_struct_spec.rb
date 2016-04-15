@@ -93,7 +93,7 @@ describe RelationToStruct do
 
     it 'should allow querying with SQL directly' do
       test_struct = Struct.new(:number)
-      sql = "SELECT 1 * 23"
+      sql = "SELECT 1 * 23 AS number"
       expect(ActiveRecord::Base.structs_from_sql(test_struct, sql)).to eq([test_struct.new(23)])
     end
 
@@ -116,7 +116,7 @@ describe RelationToStruct do
         expect(pluck_results).to eq([['F.A. Hayek']]) # Verify ActiveRecord interface.
 
         test_struct = Struct.new(:names)
-        structs_results = ActiveRecord::Base.structs_from_sql(test_struct, 'SELECT ARRAY_AGG(name ORDER BY id) FROM economists')
+        structs_results = ActiveRecord::Base.structs_from_sql(test_struct, 'SELECT ARRAY_AGG(name ORDER BY id) AS names FROM economists')
         expect(structs_results.first.names).to eq(['F.A. Hayek', 'Ludwig von Mises'])
       else
         skip "DB selection doesn't support ARRAY[]"
@@ -127,7 +127,7 @@ describe RelationToStruct do
       expect do
         test_struct = Struct.new(:id, :name, :extra_field)
         ActiveRecord::Base.structs_from_sql(test_struct, 'SELECT id, name FROM economists')
-      end.to raise_error(ArgumentError, 'Expected struct fields and columns lengths to be equal')
+      end.to raise_error(ArgumentError, 'Expected column names (and their order) to match struct attribute names')
     end
 
     it 'structs_from_sql should raise an error when column names are not unique' do
@@ -135,6 +135,24 @@ describe RelationToStruct do
         test_struct = Struct.new(:id, :id2)
         ActiveRecord::Base.structs_from_sql(test_struct, 'SELECT id, id FROM economists')
       end.to raise_error(ArgumentError, 'Expected column names to be unique')
+    end
+
+    it 'structs_from_sql should raise an error when the column names do not match the struct attribute names' do
+      Economist.create!(name: 'F.A. Hayek')
+      expect do
+        test_struct = Struct.new(:value_a, :value_b)
+        ActiveRecord::Base.structs_from_sql(test_struct, 'SELECT 1 AS value_a, 2 AS value_b FROM economists')
+      end.not_to raise_error
+
+      expect do
+        test_struct = Struct.new(:value_a, :value_b)
+        ActiveRecord::Base.structs_from_sql(test_struct, 'SELECT 1 AS value_b, 2 AS value_a FROM economists')
+      end.to raise_error(ArgumentError, 'Expected column names (and their order) to match struct attribute names')
+
+      expect do
+        test_struct = Struct.new(:value_a, :value_b)
+        ActiveRecord::Base.structs_from_sql(test_struct, 'SELECT 1 AS value_a, 2 AS value_c FROM economists')
+      end.to raise_error(ArgumentError, 'Expected column names (and their order) to match struct attribute names')
     end
   end
 end

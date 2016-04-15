@@ -5,12 +5,12 @@ module RelationToStruct::ActiveRecordBaseExtension
     def structs_from_sql(struct_class, sql, binds=[])
       result = connection.select_all(sanitize_sql(sql, nil), "Structs SQL Load", binds)
 
-      if result.columns.size != struct_class.members.size
-        raise ArgumentError, 'Expected struct fields and columns lengths to be equal'
-      end
-
       if result.columns.size != result.columns.uniq.size
         raise ArgumentError, 'Expected column names to be unique'
+      end
+
+      if result.columns != struct_class.members.collect(&:to_s)
+        raise ArgumentError, 'Expected column names (and their order) to match struct attribute names'
       end
 
       if result.columns.size == 1
