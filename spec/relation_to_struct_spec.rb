@@ -15,10 +15,6 @@ describe RelationToStruct do
       expect(Economist.all.respond_to?(:to_structs)).to eq(true)
     end
 
-    it 'should respond to :to_structs' do
-      pending 'next version'
-    end
-
     it '#to_structs should raise an error when the relation has no select_values' do
       expect do
         Economist.all.to_structs(Struct.new(:test_struct))
