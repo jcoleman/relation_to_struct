@@ -82,11 +82,11 @@ describe RelationToStruct do
       end.to raise_error(ArgumentError, 'Expected struct fields and columns lengths to be equal')
     end
 
-    it '#to_structs should raise an error when column_type count does not match the column count' do
+    it '#to_structs should raise an error when column names are not unique' do
       expect do
         test_struct = Struct.new(:id, :id2)
         Economist.select('id, id').to_structs(test_struct)
-      end.to raise_error(ArgumentError, 'Expected unique column names count and column count to be equal')
+      end.to raise_error(ArgumentError, 'Expected column names to be unique')
     end
   end
 
@@ -134,11 +134,11 @@ describe RelationToStruct do
       end.to raise_error(ArgumentError, 'Expected struct fields and columns lengths to be equal')
     end
 
-    it 'structs_from_sql should raise an error when column_type count does not match the column count' do
+    it 'structs_from_sql should raise an error when column names are not unique' do
       expect do
         test_struct = Struct.new(:id, :id2)
         ActiveRecord::Base.structs_from_sql(test_struct, 'SELECT id, id FROM economists')
-      end.to raise_error(ArgumentError, 'Expected unique column names count and column count to be equal')
+      end.to raise_error(ArgumentError, 'Expected column names to be unique')
     end
   end
 end

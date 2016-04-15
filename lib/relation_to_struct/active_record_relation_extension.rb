@@ -11,8 +11,8 @@ module RelationToStruct::ActiveRecordRelationExtension
       raise ArgumentError, 'Expected struct fields and columns lengths to be equal'
     end
 
-    if result.columns.size != result.column_types.size
-      raise ArgumentError, 'Expected unique column names count and column count to be equal'
+    if result.columns.size != result.columns.uniq.size
+      raise ArgumentError, 'Expected column names to be unique'
     end
 
     result.cast_values(klass.column_types)
