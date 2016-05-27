@@ -13,7 +13,7 @@ describe RelationToStruct do
   it '#to_structs should raise an error when the relation has no select_values' do
     expect do
       Economist.all.to_structs(Struct.new(:test_struct))
-    end.to raise_error
+    end.to raise_error(ArgumentError, 'Expected select_values to be present')
   end
 
   it '#to_structs should return an empty array when no results are returned' do

@@ -2,7 +2,7 @@ module RelationToStruct::ActiveRecordRelationExtension
   extend ::ActiveSupport::Concern
 
   def to_structs(struct_class)
-    raise '' unless self.select_values.present?
+    raise ArgumentError, 'Expected select_values to be present' unless self.select_values.present?
 
     relation = spawn
     result = klass.connection.select_all(relation.arel, nil, relation.arel.bind_values + bind_values)
