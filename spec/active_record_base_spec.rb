@@ -18,6 +18,44 @@ describe ActiveRecord::Base do
     end
   end
 
+  describe "#value_from_sql" do
+    it 'allows selecting a value with SQL directly' do
+      sql = "SELECT 1 * 23"
+      expect(ActiveRecord::Base.value_from_sql(sql)).to eq(23)
+    end
+
+    it 'raises an error when multiple columns are selected' do
+      expect do
+        sql = "SELECT * FROM (VALUES (1), (2)) t"
+        ActiveRecord::Base.value_from_sql(sql)
+      end.to raise_error(ArgumentError, 'Expected only a single result to be returned')
+    end
+
+    it 'raises an error when multiple columns are selected' do
+      expect do
+        sql = "SELECT 1, 2"
+        ActiveRecord::Base.value_from_sql(sql)
+      end.to raise_error(ArgumentError, 'Expected exactly one column to be selected')
+    end
+
+    it 'supports binds' do
+      sql = ["SELECT 1 * ?", 5]
+      expect(ActiveRecord::Base.value_from_sql(sql)).to eq(5)
+    end
+
+    it 'supports arrays' do
+      if active_record_supports_arrays?
+        Economist.create!(name: 'F.A. Hayek')
+        Economist.create!(name: 'Ludwig von Mises')
+
+        result = ActiveRecord::Base.value_from_sql('SELECT ARRAY_AGG(name ORDER BY id) AS names FROM economists')
+        expect(result).to eq(['F.A. Hayek', 'Ludwig von Mises'])
+      else
+        skip "DB selection doesn't support ARRAY[]"
+      end
+    end
+  end
+
   describe "#structs_from_sql" do
     it 'ActiveRecord::Base should respond to :structs_from_sql' do
       expect(ActiveRecord::Base.respond_to?(:structs_from_sql)).to eq(true)

@@ -28,6 +28,21 @@ module RelationToStruct::ActiveRecordBaseExtension
       result = connection.select_all(sanitize_sql(sql, nil), "Pluck SQL Load", binds)
       result.cast_values()
     end
+
+    def value_from_sql(sql, binds=[])
+      result = connection.select_all(sanitize_sql(sql, nil), "Value SQL Load", binds)
+      raise ArgumentError, 'Expected exactly one column to be selected' unless result.columns.size == 1
+
+      values = result.cast_values()
+      case values.size
+      when 0
+        nil
+      when 1
+        values[0]
+      else
+        raise ArgumentError, 'Expected only a single result to be returned'
+      end
+    end
   end
 end
 

@@ -47,6 +47,16 @@ ActiveRecord::Base.structs_from_sql(UserPostsSummary, sql) # => array of structs
 ActiveRecord::Base.pluck_from_sql(sql) # => array of tuples
 ```
 
+```
+sql = <<-eos
+  SELECT users.name
+  FROM users
+  LIMIT 1
+eos
+
+ActiveRecord::Base.value_from_sql(sql) # => single value
+```
+
 ## Contributing
 
 1. Fork it ( https://github.com/jcoleman/relation_to_struct/fork )
