@@ -55,10 +55,7 @@ describe ActiveRecord::Relation do
     it 'properly casts a single array column' do
       Economist.create!(name: 'F.A. Hayek')
 
-      pluck_results = Economist.select('name').pluck('array[name]') rescue nil
-      if pluck_results
-        expect(pluck_results).to eq([['F.A. Hayek']]) # Verify ActiveRecord interface.
-
+      if active_record_supports_arrays?
         test_struct = Struct.new(:names)
         structs_results = Economist.select('array[name]').to_structs(test_struct)
         expect(structs_results.first.names).to eq(['F.A. Hayek'])

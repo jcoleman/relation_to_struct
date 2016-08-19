@@ -30,12 +30,9 @@ describe ActiveRecord::Base do
     end
 
     it 'properly casts a single array column' do
-      Economist.create!(name: 'F.A. Hayek')
-      Economist.create!(name: 'Ludwig von Mises')
-
-      pluck_results = Economist.select('name').order('id').limit(1).pluck('array[name]') rescue nil
-      if pluck_results
-        expect(pluck_results).to eq([['F.A. Hayek']]) # Verify ActiveRecord interface.
+      if active_record_supports_arrays?
+        Economist.create!(name: 'F.A. Hayek')
+        Economist.create!(name: 'Ludwig von Mises')
 
         test_struct = Struct.new(:names)
         structs_results = ActiveRecord::Base.structs_from_sql(test_struct, 'SELECT ARRAY_AGG(name ORDER BY id) AS names FROM economists')
