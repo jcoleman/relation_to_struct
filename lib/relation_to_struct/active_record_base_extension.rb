@@ -43,6 +43,20 @@ module RelationToStruct::ActiveRecordBaseExtension
         raise ArgumentError, 'Expected only a single result to be returned'
       end
     end
+
+    def tuple_from_sql(sql, binds=[])
+      result = connection.select_all(sanitize_sql(sql, nil), "Value SQL Load", binds)
+      values = result.cast_values()
+
+      case values.size
+      when 0
+        nil
+      when 1
+        result.columns.size == 1 ? values : values[0]
+      else
+        raise ArgumentError, 'Expected only a single result to be returned'
+      end
+    end
   end
 end
 

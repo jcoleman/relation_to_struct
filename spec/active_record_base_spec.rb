@@ -56,6 +56,64 @@ describe ActiveRecord::Base do
     end
   end
 
+  describe "#tuple_from_sql" do
+    it 'allows selecting one value with SQL directly' do
+      sql = "SELECT 1"
+      expect(ActiveRecord::Base.tuple_from_sql(sql)).to eq([1])
+    end
+
+    it 'allows selecting multiple values with SQL directly' do
+      sql = "SELECT 1, 23"
+      expect(ActiveRecord::Base.tuple_from_sql(sql)).to eq([1, 23])
+    end
+
+    it 'raises an error when multiple rows are selected' do
+      expect do
+        sql = "SELECT * FROM (VALUES (1, 3), (2, 4)) t"
+        ActiveRecord::Base.tuple_from_sql(sql)
+      end.to raise_error(ArgumentError, 'Expected only a single result to be returned')
+    end
+
+    it 'supports binds' do
+      sql = ["SELECT ?, ?", 5, 6]
+      expect(ActiveRecord::Base.tuple_from_sql(sql)).to eq([5, 6])
+    end
+
+    it 'supports a single array' do
+      if active_record_supports_arrays?
+        Economist.create!(name: 'F.A. Hayek')
+        Economist.create!(name: 'Ludwig von Mises')
+
+        result = ActiveRecord::Base.tuple_from_sql(<<-SQL)
+          SELECT ARRAY_AGG(name ORDER BY id) AS names
+          FROM economists
+        SQL
+        expected_names = ['F.A. Hayek', 'Ludwig von Mises']
+        expect(result).to eq([expected_names])
+      else
+        skip "DB selection doesn't support ARRAY[]"
+      end
+    end
+
+    it 'supports multiple arrays' do
+      if active_record_supports_arrays?
+        Economist.create!(name: 'F.A. Hayek')
+        Economist.create!(name: 'Ludwig von Mises')
+
+        result = ActiveRecord::Base.tuple_from_sql(<<-SQL)
+          SELECT
+            ARRAY_AGG(name ORDER BY id) AS names,
+            ARRAY_AGG(CHAR_LENGTH(name) ORDER BY id) AS lengths
+          FROM economists
+        SQL
+        expected_names = ['F.A. Hayek', 'Ludwig von Mises']
+        expect(result).to eq([expected_names, expected_names.map(&:size)])
+      else
+        skip "DB selection doesn't support ARRAY[]"
+      end
+    end
+  end
+
   describe "#structs_from_sql" do
     it 'ActiveRecord::Base should respond to :structs_from_sql' do
       expect(ActiveRecord::Base.respond_to?(:structs_from_sql)).to eq(true)
