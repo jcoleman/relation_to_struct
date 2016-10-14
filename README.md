@@ -57,6 +57,16 @@ eos
 ActiveRecord::Base.value_from_sql(sql) # => single value
 ```
 
+```
+sql = <<-eos
+  SELECT users.id, users.name
+  FROM users
+  LIMIT 1
+eos
+
+ActiveRecord::Base.tuple_from_sql(sql) # => [id, name]
+```
+
 ## Contributing
 
 1. Fork it ( https://github.com/jcoleman/relation_to_struct/fork )
