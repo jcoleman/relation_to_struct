@@ -24,7 +24,7 @@ describe ActiveRecord::Base do
       expect(ActiveRecord::Base.value_from_sql(sql)).to eq(23)
     end
 
-    it 'raises an error when multiple columns are selected' do
+    it 'raises an error when multiple rows are selected' do
       expect do
         sql = "SELECT * FROM (VALUES (1), (2)) t"
         ActiveRecord::Base.value_from_sql(sql)
