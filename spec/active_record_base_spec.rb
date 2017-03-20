@@ -169,5 +169,11 @@ describe ActiveRecord::Base do
         ActiveRecord::Base.structs_from_sql(test_struct, 'SELECT 1 AS value_a, 2 AS value_c FROM economists')
       end.to raise_error(ArgumentError, 'Expected column names (and their order) to match struct attribute names')
     end
+
+    it 'should return an empty array when sql result is empty' do
+      test_struct = Struct.new(:id)
+      structs_results = ActiveRecord::Base.structs_from_sql(test_struct, 'SELECT id FROM economists WHERE 1 = 0')
+      expect(structs_results).to eq([])
+    end
   end
 end
