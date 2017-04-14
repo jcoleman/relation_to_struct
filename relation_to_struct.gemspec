@@ -26,6 +26,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "pry-byebug"
   spec.add_development_dependency "pg"
 
-  spec.add_dependency "activerecord", "~> 4.1"
-  spec.add_dependency "activesupport", "~> 4.1"
+  spec.add_dependency "activerecord", ">= 4.1", "< 5.1"
+  spec.add_dependency "activesupport", ">= 4.1", "< 5.1"
 end

@@ -15,14 +15,14 @@ module RelationToStruct::ActiveRecordRelationExtension
       raise ArgumentError, 'Expected column names to be unique'
     end
 
-    result.cast_values(klass.column_types)
+    values_after_casting = ActiveRecord::VERSION::MAJOR >= 5 ? result.cast_values() : result.cast_values(klass.column_types)
 
     if result.columns.size == 1
-      result.cast_values(klass.column_types).map do |tuple|
+      values_after_casting.map do |tuple|
         struct_class.new(tuple)
       end
     else
-      result.cast_values(klass.column_types).map do |tuple|
+      values_after_casting.map do |tuple|
         struct_class.new(*tuple)
       end
     end
