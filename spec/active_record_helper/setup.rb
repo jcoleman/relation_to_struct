@@ -4,7 +4,8 @@ ActiveRecord::Base.configurations = {
     "host" => 'localhost',
     "database" => 'relation_to_struct_tests',
     "encoding" => 'utf8',
-    "username" => 'jcoleman',
+    "username" => ENV["DATABASE_POSTGRESQL_USERNAME"] || `whoami`.strip,
+    "password" => ENV["DATABASE_POSTGRESQL_PASSWORD"],
   },
   "sqlite" => {
     "adapter"  => "sqlite3",
