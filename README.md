@@ -1,5 +1,7 @@
 # RelationToStruct
 
+[![Build Status](https://semaphoreci.com/api/v1/jcoleman/relation_to_struct/branches/master/badge.svg)](https://semaphoreci.com/jcoleman/relation_to_struct)
+
 When one needs to use ActiveRecord to fetch specific values (whether subset columns of a model or arbitrary calculated columns), it's desirable to avoid the overhead of model instances and any associated callbacks.
 
 ActiveRecord::Relation#pluck solves a similar problem but returns tuples; I wanted to be able to return Ruby structs to benefit from named instance methods.
