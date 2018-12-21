@@ -39,6 +39,21 @@ describe ActiveRecord::Relation do
       ).to eq([test_struct.new(hayek.name, austrian.name)])
     end
 
+    it 'incorporates both integer and text where bind parameters' do
+      hayek = Economist.create!(name: 'F.A. Hayek')
+      test_struct = Struct.new(:id, :name)
+
+      structs = Economist
+        .where(
+          :id => [hayek.id],
+          :name => hayek.name,
+        )
+        .select(:id, :name)
+        .to_structs(test_struct)
+
+      expect(structs).to eq([test_struct.new(hayek.id, hayek.name)])
+    end
+
     it 'properly casts values from arbitrary calculated columns' do
       hayek = Economist.create!(name: 'F.A. Hayek')
       scope = Economist.all
