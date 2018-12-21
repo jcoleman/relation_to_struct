@@ -1,5 +1,5 @@
-%w(4.1 4.2 5.0 5.1).each do |version|
+%w(5.0 5.1).each do |version|
   appraise "rails-#{version.gsub(/\./, "-")}" do
-    gem "rails", "~> #{version}.0"
+    gem "rails", "~> #{version}"
   end
 end
