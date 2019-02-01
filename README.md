@@ -103,3 +103,9 @@ For this reason, **all methods added to `ActiveRecord::Base` explicitly disable 
 4. Commit your changes (`git commit -am 'Add some feature'`)
 5. Push to the branch (`git push origin my-new-feature`)
 6. Create a new Pull Request
+
+## Releasing
+
+1. Bump version in `lib/relation_to_struct/version.rb` and commit.
+2. Run `rake build` to build the `*.gem` file.
+3. Run `rake release` to publish the gem to Rubygems.
