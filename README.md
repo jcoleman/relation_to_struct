@@ -69,6 +69,22 @@ eos
 ActiveRecord::Base.tuple_from_sql(sql) # => [id, name]
 ```
 
+```
+sql = <<-eos
+  SELECT 1
+eos
+
+ActiveRecord::Base.run_sql(sql) # => <no defined result>
+```
+
+```
+sql = <<-eos
+  INSERT INTO foos(bar) VALUES(1)
+eos
+
+ActiveRecord::Base.run_sql(sql) # => <number of rows modified>
+```
+
 ## Project Policy/Philosophy
 
 Executing database queries should be clearly explicit in your application code. Implicit queries (e.g., in association accesses) is an anti-pattern that results in problems like N+1 querying.

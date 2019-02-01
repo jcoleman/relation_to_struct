@@ -73,6 +73,15 @@ module RelationToStruct::ActiveRecordBaseExtension
         raise ArgumentError, 'Expected only a single result to be returned'
       end
     end
+
+    def run_sql(sql, binds=[])
+      sanitized_sql = _sanitize_sql_for_relation_to_struct(sql)
+      # We don't need to build a result set unnecessarily; using
+      # interface this also ensures we're clearing the result set
+      # for manually memory managed object (e.g., when using the
+      # PostgreSQL adaptor).
+      connection.exec_update(sanitized_sql, "Run SQL", binds)
+    end
   end
 end
 
