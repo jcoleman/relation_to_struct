@@ -69,6 +69,16 @@ eos
 ActiveRecord::Base.tuple_from_sql(sql) # => [id, name]
 ```
 
+## Project Policy/Philosophy
+
+Executing database queries should be clearly explicit in your application code. Implicit queries (e.g., in association accesses) is an anti-pattern that results in problems like N+1 querying.
+
+### Query Caching
+
+Query caching is another problem downstream from implicit querying. Because queries are happening "behind the scenes" and there's no obvious place for explicit result caching, it seems desirable to cache at the query level. But this approach applies caching at the wrong level: your application code must still expend all of the effort required to build a SQL query and (potentially) interpret results. Caching queries automatically (as Rails does by default in a web request) can easily lead to gotchas because the framework has no way of determining when caching is actually safe (both from a business logic and query contents perspective).
+
+For this reason, **all methods added to `ActiveRecord::Base` explicitly disable query caching**. Rails defaults are respected, however, on extensions to `ActiveRecord::Relation` since it's not as obvious that those queries are intended to be explicit.
+
 ## Contributing
 
 1. Fork it ( https://github.com/jcoleman/relation_to_struct/fork )

@@ -16,6 +16,20 @@ describe ActiveRecord::Base do
       sql = "SELECT 1 * 23, 25"
       expect(ActiveRecord::Base.pluck_from_sql(sql)).to eq([[23, 25]])
     end
+
+    it 'bypasses the statement cache' do
+      sql = "SELECT random()"
+      value_1 = value_2 = nil
+
+      # Simulate a standard web request in Rails, since
+      # Rails enabled caching by default.
+      ActiveRecord::Base.cache do
+        value_1 = ActiveRecord::Base.pluck_from_sql(sql)
+        value_2 = ActiveRecord::Base.pluck_from_sql(sql)
+      end
+
+      expect(value_1).not_to eq(value_2)
+    end
   end
 
   describe "#value_from_sql" do
@@ -53,6 +67,20 @@ describe ActiveRecord::Base do
       else
         skip "DB selection doesn't support ARRAY[]"
       end
+    end
+
+    it 'bypasses the statement cache' do
+      sql = "SELECT random()"
+      value_1 = value_2 = nil
+
+      # Simulate a standard web request in Rails, since
+      # Rails enabled caching by default.
+      ActiveRecord::Base.cache do
+        value_1 = ActiveRecord::Base.value_from_sql(sql)
+        value_2 = ActiveRecord::Base.value_from_sql(sql)
+      end
+
+      expect(value_1).not_to eq(value_2)
     end
   end
 
@@ -112,6 +140,20 @@ describe ActiveRecord::Base do
         skip "DB selection doesn't support ARRAY[]"
       end
     end
+
+    it 'bypasses the statement cache' do
+      sql = "SELECT random()"
+      value_1 = value_2 = nil
+
+      # Simulate a standard web request in Rails, since
+      # Rails enabled caching by default.
+      ActiveRecord::Base.cache do
+        value_1 = ActiveRecord::Base.tuple_from_sql(sql)
+        value_2 = ActiveRecord::Base.tuple_from_sql(sql)
+      end
+
+      expect(value_1).not_to eq(value_2)
+    end
   end
 
   describe "#structs_from_sql" do
@@ -168,6 +210,21 @@ describe ActiveRecord::Base do
         test_struct = Struct.new(:value_a, :value_b)
         ActiveRecord::Base.structs_from_sql(test_struct, 'SELECT 1 AS value_a, 2 AS value_c FROM economists')
       end.to raise_error(ArgumentError, 'Expected column names (and their order) to match struct attribute names')
+    end
+
+    it 'bypasses the statement cache' do
+      test_struct = Struct.new(:r)
+      sql = "SELECT random() AS r"
+      value_1 = value_2 = nil
+
+      # Simulate a standard web request in Rails, since
+      # Rails enabled caching by default.
+      ActiveRecord::Base.cache do
+        value_1 = ActiveRecord::Base.structs_from_sql(test_struct, sql)
+        value_2 = ActiveRecord::Base.structs_from_sql(test_struct, sql)
+      end
+
+      expect(value_1).not_to eq(value_2)
     end
   end
 end
