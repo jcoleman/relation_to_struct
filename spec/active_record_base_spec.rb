@@ -227,4 +227,42 @@ describe ActiveRecord::Base do
       expect(value_1).not_to eq(value_2)
     end
   end
+
+  describe "#run_sql" do
+    it 'executes the provided SQL' do
+      sql = "INSERT INTO economic_schools(name) VALUES ('Chicago')"
+      expect do
+        ActiveRecord::Base.run_sql(sql)
+      end.to change { ActiveRecord::Base.value_from_sql("SELECT COUNT(*) FROM economic_schools") }.by(1)
+    end
+
+    it 'supports binds' do
+      sql = ["INSERT INTO economic_schools(name) VALUES (?)", "Chicago"]
+      expect do
+        ActiveRecord::Base.run_sql(sql)
+      end.to change { ActiveRecord::Base.value_from_sql("SELECT COUNT(*) FROM economic_schools") }.by(1)
+    end
+
+    it 'uses the exec_update API to avoid turning things in an ActiveRecord::Result' do
+      expect(ActiveRecord::Base.connection).to receive(:exec_update).exactly(:once)
+      sql = "SELECT 1"
+      ActiveRecord::Base.run_sql(sql)
+    end
+
+    it 'returns the number of rows modified for an INSERT' do
+      sql = "INSERT INTO economic_schools(name) VALUES ('Chicago'), ('Distributism')"
+      expect(ActiveRecord::Base.run_sql(sql)).to eq(2)
+    end
+
+    it 'bypasses the statement cache' do
+      # Simulate a standard web request in Rails, since
+      # Rails enabled caching by default.
+      ActiveRecord::Base.cache do
+        expect do
+          ActiveRecord::Base.run_sql("INSERT INTO economic_schools(name) VALUES ('Chicago')")
+          ActiveRecord::Base.run_sql("INSERT INTO economic_schools(name) VALUES ('Distributism')")
+        end.to change { ActiveRecord::Base.value_from_sql("SELECT COUNT(*) FROM economic_schools") }.by(2)
+      end
+    end
+  end
 end
