@@ -36,6 +36,8 @@ relation.to_structs(UserPostsSummary) # => array of structs
 
 ### From raw SQL
 
+Note: In order to provide a consistent user experience regardless of the abstraction level used by your code, all of the following methods are available on both `ActiveRecord::Base` and `ActiveRecord::Base.connection`.
+
 ```
 UserPostsSummary = Struct.new(:user_name, :post_count)
 sql = <<-eos

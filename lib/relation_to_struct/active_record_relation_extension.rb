@@ -1,6 +1,4 @@
 module RelationToStruct::ActiveRecordRelationExtension
-  extend ::ActiveSupport::Concern
-
   def to_structs(struct_class)
     raise ArgumentError, 'Expected select_values to be present' unless self.select_values.present?
 
@@ -37,4 +35,4 @@ module RelationToStruct::ActiveRecordRelationExtension
   end
 end
 
-::ActiveRecord::Relation.send(:include, RelationToStruct::ActiveRecordRelationExtension)
+::ActiveRecord::Relation.send(:prepend, RelationToStruct::ActiveRecordRelationExtension)
