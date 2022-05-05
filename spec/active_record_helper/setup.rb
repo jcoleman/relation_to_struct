@@ -15,7 +15,7 @@ ActiveRecord::Base.configurations = {
 
 env = ENV['DATABASE'] ||= 'sqlite'
 config =
-  if ActiveRecord::Base.configurations.respond_to?('[]')
+  if ActiveRecord::VERSION::MAJOR < 7
     ActiveRecord::Base.configurations[env]
   else
     ActiveRecord::Base.configurations.configs_for(env_name: env).first
