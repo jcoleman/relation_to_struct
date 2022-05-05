@@ -57,7 +57,7 @@ describe ActiveRecord::Relation do
     it 'properly casts values from arbitrary calculated columns' do
       hayek = Economist.create!(name: 'F.A. Hayek')
       scope = Economist.all
-      pluck_results = scope.pluck("date('now')")
+      pluck_results = scope.pluck(Arel.sql("date('now')"))
       pluck_column_klass = pluck_results.first.class
 
       date_struct = Struct.new(:date)

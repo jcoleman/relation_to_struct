@@ -14,7 +14,12 @@ ActiveRecord::Base.configurations = {
 }
 
 env = ENV['DATABASE'] ||= 'sqlite'
-config = ActiveRecord::Base.configurations[env]
+config =
+  if ActiveRecord::Base.configurations.respond_to?('[]')
+    ActiveRecord::Base.configurations[env]
+  else
+    ActiveRecord::Base.configurations.configs_for(env_name: env).first
+  end
 
 case env
 when 'postgresql'

@@ -14,7 +14,7 @@ def active_record_supports_arrays?
       Economist.create!(name: 'F.A. Hayek')
       Economist.create!(name: 'Ludwig von Mises')
 
-      pluck_results = Economist.select('name').order('id').limit(1).pluck('array[name]') rescue nil
+      pluck_results = Economist.select('name').order('id').limit(1).pluck(Arel.sql('array[name]'))  rescue nil
       if pluck_results
         raise StandardError, "Unexpected array query results" unless pluck_results == [['F.A. Hayek']] # Verify ActiveRecord interface.
         supports_arrays = true
