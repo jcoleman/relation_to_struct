@@ -1,6 +1,6 @@
 module RelationToStruct::ActiveRecordConnectionAdapterExtension
   def structs_from_sql(struct_class, sql, binds=[])
-    sanitized_sql = ActiveRecord::Base._sanitize_sql_for_relation_to_struct(sql)
+    sanitized_sql = ActiveRecord::Base.sanitize_sql(sql)
     result = ActiveRecord::Base.uncached do
       select_all(sanitized_sql, "Structs SQL Load", binds)
     end
@@ -25,7 +25,7 @@ module RelationToStruct::ActiveRecordConnectionAdapterExtension
   end
 
   def pluck_from_sql(sql, binds=[])
-    sanitized_sql = ActiveRecord::Base._sanitize_sql_for_relation_to_struct(sql)
+    sanitized_sql = ActiveRecord::Base.sanitize_sql(sql)
     result = ActiveRecord::Base.uncached do
       select_all(sanitized_sql, "Pluck SQL Load", binds)
     end
@@ -33,7 +33,7 @@ module RelationToStruct::ActiveRecordConnectionAdapterExtension
   end
 
   def value_from_sql(sql, binds=[])
-    sanitized_sql = ActiveRecord::Base._sanitize_sql_for_relation_to_struct(sql)
+    sanitized_sql = ActiveRecord::Base.sanitize_sql(sql)
     result = ActiveRecord::Base.uncached do
       select_all(sanitized_sql, "Value SQL Load", binds)
     end
@@ -51,7 +51,7 @@ module RelationToStruct::ActiveRecordConnectionAdapterExtension
   end
 
   def tuple_from_sql(sql, binds=[])
-    sanitized_sql = ActiveRecord::Base._sanitize_sql_for_relation_to_struct(sql)
+    sanitized_sql = ActiveRecord::Base.sanitize_sql(sql)
     result = ActiveRecord::Base.uncached do
       select_all(sanitized_sql, "Value SQL Load", binds)
     end
@@ -68,7 +68,7 @@ module RelationToStruct::ActiveRecordConnectionAdapterExtension
   end
 
   def run_sql(sql, binds=[])
-    sanitized_sql = ActiveRecord::Base._sanitize_sql_for_relation_to_struct(sql)
+    sanitized_sql = ActiveRecord::Base.sanitize_sql(sql)
     # We don't need to build a result set unnecessarily; using
     # interface this also ensures we're clearing the result set
     # for manually memory managed object (e.g., when using the
@@ -77,4 +77,4 @@ module RelationToStruct::ActiveRecordConnectionAdapterExtension
   end
 end
 
-::ActiveRecord::ConnectionAdapters::AbstractAdapter.send(:prepend, RelationToStruct::ActiveRecordConnectionAdapterExtension)
+::ActiveRecord::ConnectionAdapters::AbstractAdapter.prepend(RelationToStruct::ActiveRecordConnectionAdapterExtension)

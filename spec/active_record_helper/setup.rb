@@ -4,8 +4,8 @@ ActiveRecord::Base.configurations = {
     "host" => 'localhost',
     "database" => 'relation_to_struct_tests',
     "encoding" => 'utf8',
-    "username" => ENV["DATABASE_POSTGRESQL_USERNAME"] || `whoami`.strip,
-    "password" => ENV["DATABASE_POSTGRESQL_PASSWORD"],
+    "username" => ENV["PGUSER"] || 'postgres',
+    "password" => ENV["PGPASSWORD"] || 'postgres',
   },
   "sqlite" => {
     "adapter"  => "sqlite3",
@@ -14,12 +14,7 @@ ActiveRecord::Base.configurations = {
 }
 
 env = ENV['DATABASE'] ||= 'sqlite'
-config =
-  if ActiveRecord::VERSION::MAJOR < 7
-    ActiveRecord::Base.configurations[env]
-  else
-    ActiveRecord::Base.configurations.configs_for(env_name: env).first
-  end
+config = ActiveRecord::Base.configurations.configs_for(env_name: env).first
 
 case env
 when 'postgresql'

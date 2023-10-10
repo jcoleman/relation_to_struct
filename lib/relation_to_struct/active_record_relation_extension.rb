@@ -6,12 +6,7 @@ module RelationToStruct::ActiveRecordRelationExtension
 
     # See the definition of #pluck in:
     # activerecord/lib/active_record/relation/calculations.rb
-    result = nil
-    if ActiveRecord::VERSION::MAJOR == 5 && ActiveRecord::VERSION::MINOR < 2
-      result = klass.connection.select_all(relation.arel, nil, bound_attributes)
-    else
-      result = klass.connection.select_all(relation.arel)
-    end
+    result = klass.connection.select_all(relation.arel)
 
     if result.columns.size != struct_class.members.size
       raise ArgumentError, 'Expected struct fields and columns lengths to be equal'
@@ -35,4 +30,4 @@ module RelationToStruct::ActiveRecordRelationExtension
   end
 end
 
-::ActiveRecord::Relation.send(:prepend, RelationToStruct::ActiveRecordRelationExtension)
+::ActiveRecord::Relation.prepend(RelationToStruct::ActiveRecordRelationExtension)
