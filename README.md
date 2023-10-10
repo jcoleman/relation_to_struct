@@ -110,4 +110,4 @@ For this reason, **all methods added to `ActiveRecord::Base` explicitly disable 
 
 1. Bump version in `lib/relation_to_struct/version.rb` and commit.
 2. Run `rake build` to build the `*.gem` file.
-3. Run `rake release` to publish the gem to Rubygems.
+3. Run `rake release` to publish the gem to Rubygems. Note: if while releasing the gem you get the error ``Your rubygems.org credentials aren't set. Run `gem push` to set them.`` you can more simply run `gem signin`.
