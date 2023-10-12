@@ -100,14 +100,15 @@ For this reason, **all methods added to `ActiveRecord::Base` explicitly disable 
 ## Contributing
 
 1. Fork it ( https://github.com/jcoleman/relation_to_struct/fork )
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Test your changes (`bundle install && bundle exec appraisal install && bundle exec rake`)
-4. Commit your changes (`git commit -am 'Add some feature'`)
-5. Push to the branch (`git push origin my-new-feature`)
-6. Create a new Pull Request
+1. Create your feature branch (`git checkout -b my-new-feature`)
+1. Install gems and spin up a PostgreSQL container (`bin/setup`)
+1. Test your changes (`bundle exec appraisal rake && DATABASE=postgresql bundle exec appraisal rake`)
+1. Commit your changes (`git commit -am 'Add some feature'`)
+1. Push to the branch (`git push origin my-new-feature`)
+1. Create a new Pull Request
 
 ## Releasing
 
 1. Bump version in `lib/relation_to_struct/version.rb` and commit.
-2. Run `rake build` to build the `*.gem` file.
-3. Run `rake release` to publish the gem to Rubygems. Note: if while releasing the gem you get the error ``Your rubygems.org credentials aren't set. Run `gem push` to set them.`` you can more simply run `gem signin`.
+1. Run `rake build` to build the `*.gem` file.
+1. Run `rake release` to publish the gem to Rubygems. Note: if while releasing the gem you get the error ``Your rubygems.org credentials aren't set. Run `gem push` to set them.`` you can more simply run `gem signin`.
