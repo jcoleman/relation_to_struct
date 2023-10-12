@@ -1,6 +1,6 @@
 # RelationToStruct
 
-[![Build Status](https://semaphoreci.com/api/v1/jcoleman/relation_to_struct/branches/master/badge.svg)](https://semaphoreci.com/jcoleman/relation_to_struct)
+[![Build Status](https://github.com/jcoleman/relation_to_struct/actions/workflows/ci.yml/badge.svg)](https://github.com/jcoleman/relation_to_struct/actions/workflows/ci.yml?query=branch%3Amaster+)
 
 When one needs to use ActiveRecord to fetch specific values (whether subset columns of a model or arbitrary calculated columns), it's desirable to avoid the overhead of model instances and any associated callbacks.
 
