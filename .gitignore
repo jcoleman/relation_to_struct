@@ -12,5 +12,4 @@
 *.so
 *.o
 *.a
-.ruby-version
 mkmf.log
