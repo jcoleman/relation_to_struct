@@ -3,7 +3,6 @@ require 'active_record'
 require 'active_support'
 require 'relation_to_struct'
 require 'active_record_helper/setup'
-require 'pry-byebug'
 
 def active_record_supports_arrays?
   if defined?(@active_record_supports_arrays)
