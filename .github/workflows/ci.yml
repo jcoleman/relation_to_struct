@@ -27,7 +27,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Start the postgres container
-        run: docker-compose up -d
+        run: docker compose up -d
         env:
           PGVERSION: ${{ matrix.pg }}
       - name: Setup Ruby using .ruby-version file
