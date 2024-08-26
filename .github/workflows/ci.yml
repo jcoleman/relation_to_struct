@@ -22,7 +22,6 @@ jobs:
     runs-on: ubuntu-latest
     env: # $BUNDLE_GEMFILE must be set at the job level, so it is set for all steps
       BUNDLE_GEMFILE: gemfiles/${{ matrix.gemfile }}.gemfile
-      ImageOS: ubuntu20
     steps:
       - uses: actions/checkout@v3
       - name: Start the postgres container
@@ -51,7 +50,6 @@ jobs:
     runs-on: ubuntu-latest
     env: # $BUNDLE_GEMFILE must be set at the job level, so it is set for all steps
       BUNDLE_GEMFILE: gemfiles/${{ matrix.gemfile }}.gemfile
-      ImageOS: ubuntu20
     steps:
       - uses: actions/checkout@v3
       - name: Setup Ruby using .ruby-version file
