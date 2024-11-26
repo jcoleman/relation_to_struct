@@ -1,5 +1,6 @@
-%w(6.1 7.0 7.1 7.2).each do |version|
+%w(7.0 7.1 7.2 8.0).each do |version|
   appraise "rails-#{version.gsub(/\./, "-")}" do
     gem "rails", "~> #{version}.0"
+    gem "sqlite3", "~> 1.4" if version == "7.0"
   end
 end
