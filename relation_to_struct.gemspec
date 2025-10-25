@@ -26,6 +26,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "pry-byebug"
   spec.add_development_dependency "pg"
 
-  spec.add_dependency "activerecord", ">= 7.0", "< 8.2"
-  spec.add_dependency "activesupport", ">= 7.0", "< 8.2"
+  spec.add_dependency "activerecord", ">= 7.2", "< 8.2"
+  spec.add_dependency "activesupport", ">= 7.2", "< 8.2"
 end
