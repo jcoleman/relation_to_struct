@@ -6,6 +6,69 @@ describe ActiveRecord::Base do
     EconomicSchool.delete_all
   end
 
+  # A secondary connection pool simulates a sharded connection — one that belongs
+  # to a different pool than ActiveRecord::Base. The old implementation used
+  # ActiveRecord::Base.uncached, which only disables the cache on ActiveRecord::Base's
+  # pool and has no effect on secondary pools.
+  describe "with a subclass using a secondary connection pool" do
+    let(:secondary_class) do
+      klass = Class.new(ActiveRecord::Base) { self.abstract_class = true }
+      stub_const("SecondaryTestConnection", klass)
+      klass.establish_connection(ActiveRecord::Base.connection_db_config)
+      klass
+    end
+    after(:each) { secondary_class.remove_connection if secondary_class.connected? }
+
+    it 'pluck_from_sql bypasses the cache on a subclass using a different pool than ActiveRecord::Base' do
+      sql = "SELECT random()"
+      value_1 = value_2 = nil
+
+      secondary_class.cache do
+        value_1 = secondary_class.pluck_from_sql(sql)
+        value_2 = secondary_class.pluck_from_sql(sql)
+      end
+
+      expect(value_1).not_to eq(value_2)
+    end
+
+    it 'value_from_sql bypasses the cache on a subclass using a different pool than ActiveRecord::Base' do
+      sql = "SELECT random()"
+      value_1 = value_2 = nil
+
+      secondary_class.cache do
+        value_1 = secondary_class.value_from_sql(sql)
+        value_2 = secondary_class.value_from_sql(sql)
+      end
+
+      expect(value_1).not_to eq(value_2)
+    end
+
+    it 'tuple_from_sql bypasses the cache on a subclass using a different pool than ActiveRecord::Base' do
+      sql = "SELECT random()"
+      value_1 = value_2 = nil
+
+      secondary_class.cache do
+        value_1 = secondary_class.tuple_from_sql(sql)
+        value_2 = secondary_class.tuple_from_sql(sql)
+      end
+
+      expect(value_1).not_to eq(value_2)
+    end
+
+    it 'structs_from_sql bypasses the cache on a subclass using a different pool than ActiveRecord::Base' do
+      test_struct = Struct.new(:r)
+      sql = "SELECT random() AS r"
+      value_1 = value_2 = nil
+
+      secondary_class.cache do
+        value_1 = secondary_class.structs_from_sql(test_struct, sql)
+        value_2 = secondary_class.structs_from_sql(test_struct, sql)
+      end
+
+      expect(value_1).not_to eq(value_2)
+    end
+  end
+
   describe "#pluck_from_sql" do
     it 'allows plucking with SQL directly' do
       sql = "SELECT 1 * 23"

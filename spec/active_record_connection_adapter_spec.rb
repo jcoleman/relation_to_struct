@@ -12,7 +12,7 @@ describe ActiveRecord::ConnectionAdapters::AbstractAdapter do
   # to a different pool than ActiveRecord::Base. The old implementation used
   # ActiveRecord::Base.uncached, which only disables the cache on ActiveRecord::Base's
   # pool and has no effect on secondary pools.
-  context "with a secondary connection pool" do
+  describe "with a secondary connection pool" do
     let(:secondary_class) do
       klass = Class.new(ActiveRecord::Base) { self.abstract_class = true }
       stub_const("SecondaryTestConnection", klass)
