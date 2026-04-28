@@ -1,7 +1,7 @@
 module RelationToStruct::ActiveRecordConnectionAdapterExtension
   def structs_from_sql(struct_class, sql, binds=[])
     sanitized_sql = ActiveRecord::Base.sanitize_sql(sql)
-    result = ActiveRecord::Base.uncached do
+    result = uncached do
       select_all(sanitized_sql, "Structs SQL Load", binds)
     end
 
@@ -26,7 +26,7 @@ module RelationToStruct::ActiveRecordConnectionAdapterExtension
 
   def pluck_from_sql(sql, binds=[])
     sanitized_sql = ActiveRecord::Base.sanitize_sql(sql)
-    result = ActiveRecord::Base.uncached do
+    result = uncached do
       select_all(sanitized_sql, "Pluck SQL Load", binds)
     end
     result.cast_values()
@@ -34,7 +34,7 @@ module RelationToStruct::ActiveRecordConnectionAdapterExtension
 
   def value_from_sql(sql, binds=[])
     sanitized_sql = ActiveRecord::Base.sanitize_sql(sql)
-    result = ActiveRecord::Base.uncached do
+    result = uncached do
       select_all(sanitized_sql, "Value SQL Load", binds)
     end
     raise ArgumentError, 'Expected exactly one column to be selected' unless result.columns.size == 1
@@ -52,7 +52,7 @@ module RelationToStruct::ActiveRecordConnectionAdapterExtension
 
   def tuple_from_sql(sql, binds=[])
     sanitized_sql = ActiveRecord::Base.sanitize_sql(sql)
-    result = ActiveRecord::Base.uncached do
+    result = uncached do
       select_all(sanitized_sql, "Value SQL Load", binds)
     end
     values = result.cast_values()
